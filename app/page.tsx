@@ -1,86 +1,48 @@
-import Image from 'next/image'
-import styles from './page.module.css'
+'use client'
+// pages/index.tsx
+import {useState, useEffect} from 'react';
+import {generateClient} from 'aws-amplify/api';
+import {Schema} from '@/amplify/data/resource';
 
-export default function Home() {
-  return (
-    <main className={styles.main}>
-      <div className={styles.description}>
-        <p>
-          Get started by editing&nbsp;
-          <code className={styles.code}>app/page.tsx</code>
-        </p>
-      </div>
+// generate your data client using the Schema from your backend
+const client = generateClient<Schema>();
 
-      <div className={styles.center}>
-        <Image
-          className={styles.logo}
-          src="/next.svg"
-          alt="Next.js Logo"
-          width={180}
-          height={37}
-          priority
-        />
-        <span>+</span>
-        <Image
-          src="/amplify.svg"
-          alt="Amplify Logo"
-          width={45}
-          height={37}
-          priority
-        />
-      </div>
+export default function HomePage() {
+    const [todos, setTodos] = useState<Schema['Todo'][]>([]);
 
-      <div className={styles.grid}>
-        <a
-          href="https://docs.amplify.aws/gen2/"
-          className={styles.card}
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2>
-            Docs <span>-&gt;</span>
-          </h2>
-          <p>Review documentation for Amplify's code-first DX (Gen 2).</p>
-        </a>
+    async function listTodos() {
+        // fetch all todos
+        const {data} = await client.models.Todo.list({
+            authMode: 'userPool'
+        })  ;
+        setTodos(data);
+    }
 
-        <a
-          href="https://docs.amplify.aws/gen2/start/quickstart/"
-          className={styles.card}
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2>
-            Quickstart <span>-&gt;</span>
-          </h2>
-          <p>Follow a tutorial to build a fullstack app with Amplify Gen 2.</p>
-        </a>
+    useEffect(() => {
+        listTodos();
+    }, []);
 
-        <a
-          href="https://docs.amplify.aws/gen2/build-a-backend/auth/set-up-auth/"
-          className={styles.card}
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2>
-            Auth <span>-&gt;</span>
-          </h2>
-          <p>Zero-config Auth UI components with social sign-in and MFA.</p>
-        </a>
+    return (
+        <main>
+            <h1>Hello, Amplify 👋</h1>
+            <button onClick={async () => {
+                // create a new Todo with the following attributes
+                const {errors, data: newTodo} = await client.models.Todo.create({
+                    // prompt the user to enter the title
+                    content: window.prompt("title"),
+                    isDone: false,
+                    priority: 'medium'
+                })
+                console.log(errors, newTodo);
+            }}>Create
+            </button>
+            <ul>
+                {todos.map((todo) => (
 
-        <a
-          href="https://docs.amplify.aws/gen2/build-a-backend/data/set-up-data/"
-          className={styles.card}
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2>
-            Data <span>-&gt;</span>
-          </h2>
-          <p>
-            Fully-typed real-time API with NoSQL database.
-          </p>
-        </a>
-      </div>
-    </main>
-  )
+                    <li key={todo.id}>{todo.content}</li>
+
+                ))}
+            </ul>
+        </main>
+    );
 }
