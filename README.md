@@ -4,9 +4,23 @@ This is a starter application for building fullstack apps with AWS Amplify.
 
 Learn more: https://docs.amplify.aws/gen2/start/quickstart/ 
 
+### Set up Amplify
+
+```bash
+npm install -g @aws-amplify/cli
+npx amplify configure profile
+```
+see: https://docs.amplify.aws/gen2/start/account-setup/
+
+
 ### Getting Started
 
-First, run the development server:
+#### Start backend in cloud for local development
+```bash
+npx amplify sandbox
+```
+
+#### Start frontend for local development
 
 ```bash
 npm run dev
