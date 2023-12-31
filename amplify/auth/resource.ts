@@ -1,4 +1,6 @@
-import {defineAuth} from '@aws-amplify/backend';
+// amplify/auth/resource.ts
+// This file will deploy AWS Cognito resources
+import { defineAuth } from '@aws-amplify/backend';
 
 /**
  * Define and configure your auth resource
@@ -7,9 +9,7 @@ import {defineAuth} from '@aws-amplify/backend';
  */
 export const auth = defineAuth({
     loginWith: {
-        email: {
-            verificationEmailSubject: 'Welcome! Verify your email!'
-        },
+        email: true,
         // add social providers
         externalProviders: {
             /**
@@ -21,7 +21,7 @@ export const auth = defineAuth({
             //   clientId: secret('LOGINWITHAMAZON_CLIENT_ID'),
             //   clientSecret: secret('LOGINWITHAMAZON_CLIENT_SECRET'),
             // }
-        },
+        }
     },
     /**
      * enable multifactor authentication
@@ -39,5 +39,5 @@ export const auth = defineAuth({
         //   mutable: true,
         //   required: false,
         // },
-    },
+    }
 });
