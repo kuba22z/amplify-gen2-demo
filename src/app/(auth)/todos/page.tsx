@@ -9,15 +9,19 @@ const client = generateClient<Schema>();
 
 export default function Todos() {
     const [todos, setTodos] = useState<Schema['Todo'][]>([]);
+    const [isLoading, setIsLoading] = useState(false)
+
     async function listTodos() {
         // fetch all todos
         client.models.Todo
             .list({authMode: 'userPool'})
             .then((response) => setTodos(response.data))
             .catch(error => console.error(error));
+        setIsLoading(false)
     }
 
     useEffect(() => {
+        setIsLoading(true)
         listTodos();
     }, []);
 
@@ -31,16 +35,19 @@ export default function Todos() {
                     content: window.prompt("title"),
                     isDone: false,
                     priority: 'medium'
-                }).then(response => console.log(response.data))
+                }).then(response => {console.log(response.data); return response.data})
+                    .then(newDto => setTodos(prevState => prevState.concat(newDto)))
                     .catch(error => console.error(error));
 
             }}>Create
             </button>
-            <ul>
+            <div>
+            {isLoading ? <text>Loading...</text> : <ul>
                 {todos.map((todo) => (
                     <li key={todo.id}>{todo.content}</li>
                 ))}
-            </ul>
+            </ul>}
+            </div>
         </main>
     );
 }

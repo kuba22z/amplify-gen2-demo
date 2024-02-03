@@ -13,7 +13,7 @@ const Login = () => {
     redirect(origin);
   }
 
-  return <div>LOGIN</div>;
+  return <div>You are logged in</div>;
 };
 
 export default withAuthenticator(Login);
