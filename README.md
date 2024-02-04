@@ -32,6 +32,12 @@ pnpm dev
 bun dev
 ```
 
+#### Generate forms
+```bash
+npx amplify generate forms
+```
+
+
 Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
 
 ## Security
